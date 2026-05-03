@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper-1 text-ink-primary font-sans text-base;
+  }
+  
+  * {
+    @apply border-border-primary;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply font-sans text-xs uppercase text-ink-muted;
+    letter-spacing: 0.1em;
+    margin: 2rem 0 0.75rem 0;
+  }
+
+  .card {
+    @apply border border-border-secondary bg-paper-1 p-5;
+  }
+
+  .stat-card {
+    @apply border border-border-primary bg-paper-1 px-4 py-3.5;
+  }
+
+  .toggle-track {
+    @apply border border-border-primary rounded-lg transition-colors cursor-pointer;
+    width: 28px;
+    height: 15px;
+  }
+
+  .toggle-track.active {
+    @apply bg-sage-primary border-sage-primary;
+  }
+
+  .toggle-thumb {
+    @apply absolute bg-white rounded-full transition-all;
+    width: 11px;
+    height: 11px;
+    top: 2px;
+    left: 2px;
+  }
+
+  .toggle-track.active .toggle-thumb {
+    left: 15px;
+  }
+
+  .badge {
+    @apply font-sans text-xs px-2 py-0.75;
+    letter-spacing: 0.04em;
+    border-radius: 0;
+  }
+
+  .cron-pill {
+    @apply font-sans text-xs px-1.75 py-0.5 bg-sage-tint text-sage-primary border border-sage-primary;
+    border-radius: 0;
+  }
+
+  .input-field {
+    @apply font-sans text-sm bg-paper-1 border border-border-primary px-3 py-2;
+    border-radius: 0;
+  }
+
+  .btn-primary {
+    @apply font-sans text-base bg-rust-primary text-white px-5 py-2 hover:bg-rust-dark transition-colors cursor-pointer border-0;
+    border-radius: 0;
+  }
+
+  .btn-secondary {
+    @apply font-sans text-xs border border-ink-primary text-ink-primary bg-transparent px-2 py-1 hover:border-rust-primary hover:text-rust-primary transition-colors cursor-pointer;
+    border-radius: 0;
+  }
+}

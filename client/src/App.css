@@ -1,0 +1,36 @@
+/* SendSlot App Styles */
+
+/* Navigation bar height */
+.h-52px {
+  height: 52px;
+}
+
+/* Letter spacing utility */
+.letter-spacing-wide {
+  letter-spacing: 0.1em;
+}
+
+/* Truncate utility for long file names */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Disable transition on hover state changes for better UX */
+button:hover {
+  transition-duration: 100ms;
+}
+
+/* Ensure proper text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
