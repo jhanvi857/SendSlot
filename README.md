@@ -1,5 +1,7 @@
 # SendSlot
-Special thanks to [ni3rav](https://github.com/ni3rav) for the original project inspiration. His [blog](https://ni3rav.me/blogs/how-i-implemented-image-upload-pipeline) was an invaluable reference during the implementation of this project.
+> Special thanks to [ni3rav](https://github.com/ni3rav) for the original project inspiration. His [blog](https://ni3rav.me/blogs/how-i-implemented-image-upload-pipeline) was a valuable reference during the implementation of this project.
+---
+
 SendSlot is a professional, high-performance file sharing platform designed for secure and ephemeral data transfer. It leverages a modern distributed architecture to handle large file uploads, background processing, and real-time notifications.
 
 ## System Architecture
