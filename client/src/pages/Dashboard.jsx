@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
-export default function Dashboard({ onLogout }) {
+export default function Dashboard({ user, onLogout }) {
   const [activeNav, setActiveNav] = useState('transfers')
   const [dragActive, setDragActive] = useState(false)
   const [files, setFiles] = useState([])
@@ -10,6 +10,7 @@ export default function Dashboard({ onLogout }) {
     virusScan: true,
     notifyOnDownload: true,
   })
+  const [userEmail, setUserEmail] = useState(user?.user?.email || '')
   const fileInputRef = useRef(null)
   const [workerStats, setWorkerStats] = useState([])
   const [serverTransfers, setServerTransfers] = useState([])
@@ -44,10 +45,14 @@ export default function Dashboard({ onLogout }) {
     const list = Array.from(fileList)
     const payloadFiles = list.map(f => ({ name: f.name, size: f.size, type: f.type }))
     const notify = toggleStates.notifyOnDownload
+    const email = userEmail
     const res = await fetch('/api/transfers', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ files: payloadFiles, expiryDays: 7, notify })
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user?.token}`
+      },
+      body: JSON.stringify({ files: payloadFiles, expiryDays: 7, notify, email })
     })
     if (!res.ok) {
       console.error('create transfer failed')
@@ -459,14 +464,25 @@ export default function Dashboard({ onLogout }) {
               </div>
             </div>
 
-            <div className="flex justify-between items-center py-2.5">
-              <label className="font-serif text-lg text-ink-secondary">Notify on download</label>
-              <div
-                className={`relative toggle-track ${toggleStates.notifyOnDownload ? 'active' : ''}`}
-                onClick={() => toggleSwitch('notifyOnDownload')}
-              >
-                <div className="toggle-thumb"></div>
+            <div className="flex flex-col py-2.5">
+              <div className="flex justify-between items-center">
+                <label className="font-serif text-lg text-ink-secondary">Notify on download</label>
+                <div
+                  className={`relative toggle-track ${toggleStates.notifyOnDownload ? 'active' : ''}`}
+                  onClick={() => toggleSwitch('notifyOnDownload')}
+                >
+                  <div className="toggle-thumb"></div>
+                </div>
               </div>
+              {toggleStates.notifyOnDownload && (
+                <input
+                  type="email"
+                  placeholder="Notification email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  className="mt-3 w-full bg-paper-1 border border-border-primary px-3 py-2 font-sans text-xs focus:outline-none focus:border-rust-primary"
+                />
+              )}
             </div>
           </div>
 

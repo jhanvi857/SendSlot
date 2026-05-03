@@ -6,10 +6,30 @@ export default function Signup({ onNavigate, onSignup }) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (fullName && email && password && confirmPassword && password === confirmPassword) {
-      onSignup()
+    setError('')
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName })
+      })
+      if (res.ok) {
+        const data = await res.json()
+        onSignup(data)
+      } else {
+        const err = await res.json()
+        setError(err.error || 'Signup failed')
+      }
+    } catch (err) {
+      setError('Connection error')
     }
   }
 
@@ -58,6 +78,7 @@ export default function Signup({ onNavigate, onSignup }) {
           </div>
 
           {/* Form */}
+          {error && <div className="mb-4 p-3 bg-rust-light text-rust-primary font-sans text-sm border border-rust-primary">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block font-serif text-lg text-ink-secondary mb-2">

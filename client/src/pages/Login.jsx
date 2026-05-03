@@ -4,10 +4,26 @@ export default function Login({ onNavigate, onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (email && password) {
-      onLogin()
+    setError('')
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      if (res.ok) {
+        const data = await res.json()
+        onLogin(data)
+      } else {
+        const err = await res.json()
+        setError(err.error || 'Login failed')
+      }
+    } catch (err) {
+      setError('Connection error')
     }
   }
 
@@ -56,6 +72,7 @@ export default function Login({ onNavigate, onLogin }) {
           </div>
 
           {/* Form */}
+          {error && <div className="mb-4 p-3 bg-rust-light text-rust-primary font-sans text-sm border border-rust-primary">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block font-serif text-lg text-ink-secondary mb-2">

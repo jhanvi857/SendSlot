@@ -8,10 +8,16 @@ import Download from './pages/Download'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('landing')
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null)
   const [slug, setSlug] = useState(null)
 
   useEffect(() => {
+    const savedUser = localStorage.getItem('sendslot_user')
+    if (savedUser) {
+      setUser(JSON.parse(savedUser))
+      setCurrentPage('dashboard')
+    }
+
     const path = window.location.pathname
     if (path.startsWith('/d/')) {
       const s = path.split('/')[2]
@@ -29,13 +35,15 @@ export default function App() {
     }
   }
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
+  const handleLogin = (userData) => {
+    setUser(userData)
+    localStorage.setItem('sendslot_user', JSON.stringify(userData))
     setCurrentPage('dashboard')
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    setUser(null)
+    localStorage.removeItem('sendslot_user')
     setCurrentPage('landing')
   }
 
@@ -55,8 +63,8 @@ export default function App() {
     return <Signup onNavigate={navigateTo} onSignup={handleLogin} />
   }
 
-  if (currentPage === 'dashboard' && isLoggedIn) {
-    return <Dashboard onLogout={handleLogout} />
+  if (currentPage === 'dashboard' && user) {
+    return <Dashboard user={user} onLogout={handleLogout} />
   }
 
   return <Landing onNavigate={navigateTo} />
