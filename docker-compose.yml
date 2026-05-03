@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sendslot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: SendSlot
+    ports:
+      - "5432:5432"
+    volumes:
+      - sendslot_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: sendslot-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - sendslot_redis_data:/data
+
+  minio:
+    image: minio/minio
+    container_name: sendslot-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - sendslot_minio_data:/data
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set local http://minio:9000 minioadmin minioadmin) do echo '...waiting for minio...' && sleep 1; done;
+      /usr/bin/mc mb --ignore-existing local/sendslot-files;
+      /usr/bin/mc anonymous set public local/sendslot-files;
+      echo '[{"AllowedHeaders":["*"],"AllowedMethods":["GET","PUT","POST","DELETE"],"AllowedOrigins":["*"],"ExposeHeaders":["ETag"]}]' > /tmp/cors.json;
+      # Note: older mc might not have bucket cors, so we use a fallback or check
+      /usr/bin/mc bucket cors local/sendslot-files --set /tmp/cors.json || echo 'CORS set failed, might need manual config';
+      exit 0;
+      "
+
+volumes:
+  sendslot_postgres_data:
+  sendslot_redis_data:
+  sendslot_minio_data:
