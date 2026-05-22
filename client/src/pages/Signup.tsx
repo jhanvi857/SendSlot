@@ -1,26 +1,32 @@
 import { useState } from 'react'
 
-export default function Login({ onNavigate, onLogin }) {
+export default function Signup({ onNavigate, onSignup }: { onNavigate: (page: string) => void, onSignup: (userData: any) => void }) {
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, fullName })
       })
       if (res.ok) {
         const data = await res.json()
-        onLogin(data)
+        onSignup(data)
       } else {
         const err = await res.json()
-        setError(err.error || 'Login failed')
+        setError(err.error || 'Signup failed')
       }
     } catch (err) {
       setError('Connection error')
@@ -40,10 +46,10 @@ export default function Login({ onNavigate, onLogin }) {
 
         <div>
           <h2 className="font-serif text-4xl font-bold text-ink-primary mb-4 leading-tight">
-            Welcome back
+            Join us
           </h2>
           <p className="font-sans text-lg text-ink-secondary">
-            Sign in to your account and continue sharing with intention.
+            Create your account and start sharing files with intention. No distractions, just purpose.
           </p>
         </div>
 
@@ -64,16 +70,29 @@ export default function Login({ onNavigate, onLogin }) {
               SendSlot<span className="text-rust-primary">.</span>
             </div>
             <h2 className="font-serif text-3xl font-bold text-ink-primary mb-2">
-              Welcome back
+              Create your account
             </h2>
             <p className="font-sans text-sm text-ink-secondary">
-              Sign in to your account
+              Join the SendSlot community
             </p>
           </div>
 
           {/* Form */}
           {error && <div className="mb-4 p-3 bg-rust-light text-rust-primary font-sans text-sm border border-rust-primary">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block font-serif text-lg text-ink-secondary mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Your name"
+                className="w-full font-sans text-base bg-paper-1 border border-border-primary px-4 py-3 text-ink-primary placeholder-ink-muted focus:outline-none focus:border-rust-primary"
+              />
+            </div>
+
             <div>
               <label className="block font-serif text-lg text-ink-secondary mb-2">
                 Email
@@ -95,7 +114,20 @@ export default function Login({ onNavigate, onLogin }) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Create a password"
+                className="w-full font-sans text-base bg-paper-1 border border-border-primary px-4 py-3 text-ink-primary placeholder-ink-muted focus:outline-none focus:border-rust-primary"
+              />
+            </div>
+
+            <div>
+              <label className="block font-serif text-lg text-ink-secondary mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
                 className="w-full font-sans text-base bg-paper-1 border border-border-primary px-4 py-3 text-ink-primary placeholder-ink-muted focus:outline-none focus:border-rust-primary"
               />
             </div>
@@ -104,20 +136,20 @@ export default function Login({ onNavigate, onLogin }) {
               type="submit"
               className="w-full font-sans text-base bg-rust-primary text-white py-3 hover:bg-rust-dark transition-colors"
             >
-              sign in
+              create account
             </button>
           </form>
 
-          {/* Sign up link */}
+          {/* Sign in link */}
           <div className="mt-8 text-center border-t border-border-primary pt-8">
             <p className="font-sans text-sm text-ink-muted mb-2">
-              No account yet?
+              Already have an account?
             </p>
             <button
-              onClick={() => onNavigate('signup')}
+              onClick={() => onNavigate('login')}
               className="font-sans text-base text-rust-primary hover:text-rust-dark transition-colors"
             >
-              create one
+              sign in
             </button>
           </div>
         </div>

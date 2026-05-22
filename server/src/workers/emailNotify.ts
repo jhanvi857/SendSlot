@@ -1,7 +1,8 @@
 import { sql } from '../lib/db.js';
 import { sendMail } from '../lib/mailer.js';
+import { Job } from 'bullmq';
 
-export default async function jobProcessor(job) {
+export default async function jobProcessor(job: Job) {
   const { transferId } = job.data;
   const t = await sql`SELECT * FROM transfers WHERE id=${transferId}`;
   if (!t.length) return;
