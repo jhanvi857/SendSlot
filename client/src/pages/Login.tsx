@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-export default function Login({ onNavigate, onLogin }) {
+export default function Login({ onNavigate, onLogin }: { onNavigate: (page: string) => void, onLogin: (userData: any) => void }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     try {

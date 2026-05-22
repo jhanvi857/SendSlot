@@ -2,13 +2,14 @@
   "name": "sendslot-server",
   "version": "0.1.0",
   "type": "module",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
+    "build": "tsc",
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:worker\"",
-    "dev:api": "nodemon src/app.js",
-    "dev:worker": "cross-env WORKER_PRIMARY=true nodemon src/workers/index.js",
-    "start:api": "node src/app.js",
-    "start:worker": "WORKER_PRIMARY=true node src/workers/index.js"
+    "dev:api": "tsx watch src/app.ts",
+    "dev:worker": "cross-env WORKER_PRIMARY=true tsx watch src/workers/index.ts",
+    "start:api": "node dist/app.js",
+    "start:worker": "cross-env WORKER_PRIMARY=true node dist/workers/index.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.394.0",
@@ -31,7 +32,17 @@
     "postgres": "^3.1.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.9.1",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^8.0.0",
     "cross-env": "^7.0.3",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
   }
 }

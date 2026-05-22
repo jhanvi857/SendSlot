@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sql = postgres(process.env.DATABASE_URL, { ssl: process.env.NODE_ENV === 'production' });
+const sql = postgres(process.env.DATABASE_URL || '', { ssl: process.env.NODE_ENV === 'production' });
 
 async function ensureSchema() {
   const schemaSql = `

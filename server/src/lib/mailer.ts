@@ -1,9 +1,9 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-let transporter = null;
+let transporter: Transporter | null = null;
 if (process.env.SMTP_HOST && process.env.SMTP_USER) {
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -15,7 +15,7 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER) {
   });
 }
 
-async function sendMail(to, subject, text, html) {
+async function sendMail(to: string, subject: string, text: string, html?: string) {
   if (!transporter) {
     console.log('SMTP not configured : email log:', { to, subject, text });
     return;

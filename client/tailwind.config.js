@@ -2,7 +2,9 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./client/index.html",
+    "./client/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -44,7 +46,6 @@ export default {
       fontFamily: {
         serif: ['Source Serif 4', 'serif'],
         sans: ['IBM Plex Sans', 'sans-serif'],
-        sans: ['IBM Plex sans', 'sansspace'],
       },
       fontSize: {
         xs: '10px',

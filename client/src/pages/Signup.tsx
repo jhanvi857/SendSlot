@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function Signup({ onNavigate, onSignup }) {
+export default function Signup({ onNavigate, onSignup }: { onNavigate: (page: string) => void, onSignup: (userData: any) => void }) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -8,7 +8,7 @@ export default function Signup({ onNavigate, onSignup }) {
 
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     if (password !== confirmPassword) {

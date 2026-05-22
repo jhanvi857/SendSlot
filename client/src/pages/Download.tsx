@@ -1,16 +1,28 @@
 import { useState, useEffect } from 'react'
 
-export default function Download({ slug, onNavigate }) {
-  const [transfer, setTransfer] = useState(null)
-  const [files, setFiles] = useState([])
-  const [error, setError] = useState(null)
+interface FileItem {
+  id: string;
+  original_name: string;
+  size_bytes: string | number;
+  mime_type?: string;
+}
+
+interface Transfer {
+  expires_at: string;
+  protected?: boolean;
+}
+
+export default function Download({ slug, onNavigate }: { slug: string, onNavigate: (page: string) => void }) {
+  const [transfer, setTransfer] = useState<Transfer | null>(null)
+  const [files, setFiles] = useState<FileItem[]>([])
+  const [error, setError] = useState<string | null>(null)
   const [password, setPassword] = useState('')
   const [isProtected, setIsProtected] = useState(false)
   const [verifying, setVerifying] = useState(false)
 
-  const fetchTransfer = async (pass = '') => {
+  const fetchTransfer = async (pass: string = '') => {
     try {
-      const headers = pass ? { 'x-transfer-password': pass } : {}
+      const headers: HeadersInit = pass ? { 'x-transfer-password': pass } : {}
       const res = await fetch(`/api/transfers/${slug}`, { headers })
       
       if (res.status === 403 || res.status === 401) {
@@ -41,14 +53,14 @@ export default function Download({ slug, onNavigate }) {
     fetchTransfer()
   }, [slug])
 
-  const handleVerify = async (e) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     setVerifying(true)
     await fetchTransfer(password)
     setVerifying(false)
   }
 
-  const handleDownload = async (fileId) => {
+  const handleDownload = async (fileId: string) => {
     try {
       const res = await fetch(`/api/transfers/${slug}/download/${fileId}`)
       if (res.ok) {
@@ -132,7 +144,7 @@ export default function Download({ slug, onNavigate }) {
                 <div>
                   <div className="font-sans text-lg font-medium text-ink-primary">{file.original_name}</div>
                   <div className="font-sans text-xs text-ink-muted mt-1">
-                    {(file.size_bytes / 1024 / 1024).toFixed(2)} MB • {file.mime_type || 'Unknown type'}
+                    {(Number(file.size_bytes) / 1024 / 1024).toFixed(2)} MB • {file.mime_type || 'Unknown type'}
                   </div>
                 </div>
                 <button
@@ -147,7 +159,7 @@ export default function Download({ slug, onNavigate }) {
 
           <div className="text-center border-t border-border-secondary pt-8">
             <p className="font-sans text-xs text-ink-muted">
-              Transfer size: {(files.reduce((acc, f) => acc + parseInt(f.size_bytes), 0) / 1024 / 1024).toFixed(2)} MB
+              Transfer size: {(files.reduce((acc, f) => acc + Number(f.size_bytes), 0) / 1024 / 1024).toFixed(2)} MB
             </p>
           </div>
         </div>
